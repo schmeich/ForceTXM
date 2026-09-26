@@ -1,0 +1,27 @@
+name: Build ForceTXM dylib
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          xcrun --sdk iphoneos clang \
+            -arch arm64 \
+            -miphoneos-version-min=15.0 \
+            -dynamiclib \
+            -Os \
+            ForceTXM.c \
+            -Wl,-install_name,@rpath/ForceTXM.dylib \
+            -o ForceTXM.dylib
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ForceTXM
+          path: ForceTXM.dylib
